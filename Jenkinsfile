@@ -1,3 +1,4 @@
+
 pipeline{
     agent any
     environment{
@@ -7,7 +8,7 @@ pipeline{
     stages{
         stage('checkscm'){
           steps{
-            checkout scmGit(branches: [[name: '*/dev']], extensions: [], userRemoteConfigs: [[credentialsId: 'Github', url: 'https://github.com/sanjusanjay23/capstone-project-.git']])
+            checkout scmGit(branches: [[name: '*/dev']], extensions: [], userRemoteConfigs: [[credentialsId: 'githubtoken', url: 'https://github.com/sanjusanjay23/capstone-project-.git']])
           }
     
         }
