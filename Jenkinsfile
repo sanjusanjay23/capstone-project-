@@ -19,6 +19,7 @@ pipeline{
               echo "building the application"
               sh "chmod +x build.sh" 
               sh('./build.sh')
+              sh 'npx browserslist@latest --update-db'  // Add this line to update caniuse-lite
           }
        }
     
