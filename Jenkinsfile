@@ -8,7 +8,7 @@ pipeline{
     stages{
         stage('checkscm'){
           steps{
-            checkout([$class: 'GitSCM', branches:[[name: '*/dev']], extensions: [], userRemoteConfigs: [[credentialsId: 'githubtoken', url: 'https://github.com/sanjusanjay23/capstone-project-.git']])
+            checkout([$class: 'GitSCM', branches:[[name: '*/dev']], extensions: [], userRemoteConfigs: [[credentialsId: 'githubtoken', url: 'https://github.com/sanjusanjay23/capstone-project-.git']]])
           }
     
         }
