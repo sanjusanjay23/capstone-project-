@@ -37,7 +37,7 @@ pipeline{
              script {
                    def dockerCmd = 'docker run -itd --name my-reactapp -p 80:80 sanjusanjay23/dev:latest'
                    sshagent(['sshkey']) {
-                      sh "ssh -i serverlogin.pem ubuntu@ec2-52-32-144-191.us-west-2.compute.amazonaws.com ${dockerCmd}"
+                      sh "ssh -i serverlogin.pem ubuntu@ec2-52-25-113-75.us-west-2.compute.amazonaws.com ${dockerCmd}"
                    }
              }
          }    
