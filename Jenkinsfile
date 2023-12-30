@@ -1,54 +1,47 @@
-pipeline{
+pipeline {
     agent any
-    environment{
-       DOCKERHUB_CREDENTIALS = credentials('dockerhub-ID')
+    tools {
+        nodejs 'nodejs'
     }
-    
-    stages{
-        stage('checkscm'){
-          steps{
-            checkout([$class: 'GitSCM', branches:[[name: '*/prod']], extensions: [], userRemoteConfigs: [[credentialsId: 'githubtoken', url: 'https://github.com/sanjusanjay23/capstone-project-.git']]])
-          }
-    
+    stages {
+        stage('Build') {
+            steps {
+                checkout scmGit(branches: [[name: '*/Dev']], extensions: [], userRemoteConfigs: [[credentialsId: 'Github', url: 'https://github.com/sanjusanjay23/Capstone-Project01.git']])
+                sh 'npm install'
+                // sh 'npm run build'
+            }
         }
-        
-        stage('build'){
-          steps{
-              
-              echo "building the application"
-              sh "chmod +x build.sh" 
-              sh('./build.sh')
-              sh 'npx browserslist@latest --update-db'  // Add this line to update caniuse-lite
-          }
+        stage('Test') {
+            steps {
+                // sh 'npm run test'
+                echo "Test"
+            }
+        }
+       stage('Build Image') {
+            steps { 
+                sh 'docker build -t react-image .'
+                sh 'docker tag react-image:latest sanjusanjay23/dev:latest'
+            }    
        }
-    
-       stage('push'){
-         steps{
-             script{
-                 echo "pushing the application"
-                 sh "chmod +x deploy.sh"
-                 sh('./deploy.sh')       
-             } 
-         } 
-                    
-       } 
-       stage('deploy'){
-          steps{
-             script {
-                   def dockerCmd = 'docker run -itd --name my-reactapp -p 80:80 sanjusanjay23/dev:latest'
-                   sshagent(['sshkey']) {
-                      sh "ssh -i serverlogin.pem ubuntu@ec2-52-25-113-75.us-west-2.compute.amazonaws.com ${dockerCmd}"
+       stage('Docker login') {
+            steps { 
+                withCredentials([usernamePassword(credentialsId: 'Dockercred', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                sh "echo $PASS | docker login -u $USER --password-stdin"
+                sh 'docker push sanjusanjay23/dev:latest'
+                }
+            }
+       }
+       stage('Deploy') {
+            steps {  
+                script {
+                   def dockerCmd = 'docker run -itd --name My-first-container -p 80:5000 sanjusanjay23/dev:latest'
+                   sshagent(['sshkeypair']) {
+                   sh "ssh -i serverlogin.pem ubuntu@ec2-54-185-63-182.us-west-2.compute.amazonaws.com ${dockerCmd}"
                    }
-             }
-         }    
+                }
+            }
        }
     }
-    post{
-        success{
-
-             emailext body: '  successfully completed my capstone project', subject: 'successfully build', to: 'sanjay23gokul@gmail.com'   
-
-        }
-    }   
-    
 }
+
+
