@@ -1,10 +1,9 @@
 #!/bin/bash
-#set the image 
- IMAGENAME="my-reactapp"
 
-#build the image
- docker build -t $IMAGENAME .
- #tag the image
- docker tag $IMAGENAME sanjusanjay23/$IMAGENAME
-
-
+docker build -t react-image .
+result=$( sudo docker images -q react-image )
+if [[ -n "$result" ]]; then
+  echo 'Container image exists'
+else
+  echo 'No such container image'
+fi
