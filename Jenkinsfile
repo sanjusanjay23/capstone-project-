@@ -36,7 +36,7 @@ pipeline {
                 script {
                    def dockerCmd = 'docker run -itd --name My-first-container -p 80:5000 sanjusanjay23/dev:latest'
                    sshagent(['sshkeypair']) {
-                   sh "ssh -i serverlogin.pem ubuntu@ec2-54-185-63-182.us-west-2.compute.amazonaws.com ${dockerCmd}"
+                   sh "ssh -i serverlogin.pem ec2-user@ec2-34-222-119-174.us-west-2.compute.amazonaws.com ${dockerCmd}"
                    }
                 }
             }
